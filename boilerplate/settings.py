@@ -42,6 +42,9 @@ INSTALLED_APPS = [
 GRAPHENE = {
     "SCHEMA": "alerts.schema.schema",
     "ATOMIC_MUTATIONS": True,
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
 
 DJOSER = {
@@ -96,18 +99,20 @@ SIMPLE_JWT = {
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
-
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+
 ]
 
 CORS_ALLOWED_ORIGINS = [os.getenv("FRONT_ONE")]
+
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
@@ -133,6 +138,7 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
     "withcredentials", 
+    "token"
 
 ]
 
