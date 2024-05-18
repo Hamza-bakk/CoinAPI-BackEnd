@@ -39,13 +39,7 @@ INSTALLED_APPS = [
     "alerts",
 ]
 
-GRAPHENE = {
-    "SCHEMA": "alerts.schema.schema",
-    "ATOMIC_MUTATIONS": True,
-    'MIDDLEWARE': [
-        'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    ],
-}
+
 
 DJOSER = {
     "LOGIN_FIELD": "email",
@@ -214,7 +208,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
+
 
 USE_I18N = True
 
