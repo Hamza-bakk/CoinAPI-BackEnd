@@ -61,11 +61,12 @@ class UpdateAlerts(graphene.Mutation):
         id = graphene.ID(required=True)
         asset = graphene.String()
         target_price = graphene.Int()
+        current_price = graphene.Int()
         is_open = graphene.Boolean()
         
     alerts = graphene.Field(AlertsType)
     
-    def mutate(self, info, id, asset=None, target_price=None, is_open=None):
+    def mutate(self, info, id, asset=None, current_price=None ,target_price=None, is_open=None):
         alerts = Alerts.objects.get(pk=id)
         if asset is not None:
             alerts.asset = asset
@@ -73,6 +74,8 @@ class UpdateAlerts(graphene.Mutation):
             alerts.target_price = target_price
         if is_open is not None:
             alerts.is_open = is_open
+        if current_price is not None:
+            alerts.current_price = current_price
         alerts.save()
         return UpdateAlerts(alerts=alerts)
     
