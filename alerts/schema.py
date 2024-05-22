@@ -12,7 +12,7 @@ class UserAccountType(DjangoObjectType):
 class AlertsType(DjangoObjectType):
     class Meta:
         model = Alerts
-        fields = ("id", "userId", "asset", "current_price", "target_price", "is_open", "open_date")
+        fields = ("id", "userId", "asset", "current_price", "target_price", "is_open", "open_date", "close_date")
 
 class Query(graphene.ObjectType):
     all_alerts = graphene.List(AlertsType)
@@ -39,10 +39,11 @@ class CreateAlerts(graphene.Mutation):
         target_price = graphene.Int(required=True)
         is_open = graphene.Boolean(required=True)
         open_date = graphene.DateTime(required=False)
+        close_date = graphene.DateTime(required=False)
         
     alerts = graphene.Field(AlertsType)
     
-    def mutate(self, info, userId, asset, current_price, target_price, is_open, open_date=None):
+    def mutate(self, info, userId, asset, current_price, target_price, is_open, open_date=None, close_date=None) :
         user = UserAccount.objects.get(pk=userId)
         if open_date is None:
             open_date = datetime.now()
@@ -52,7 +53,8 @@ class CreateAlerts(graphene.Mutation):
             current_price=current_price, 
             target_price=target_price, 
             is_open=is_open, 
-            open_date=open_date
+            open_date=open_date,
+            close_date=close_date
         )
         return CreateAlerts(alerts=alerts)
 
