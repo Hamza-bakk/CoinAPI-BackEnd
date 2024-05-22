@@ -1,5 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
+from graphql import GraphQLError
 from .models import Alerts
 from users.models import UserAccount
 from datetime import datetime
@@ -70,6 +71,9 @@ class UpdateAlerts(graphene.Mutation):
     
     def mutate(self, info, id, asset=None, current_price=None ,target_price=None, is_open=None):
         alerts = Alerts.objects.get(pk=id)
+        
+        if alerts.userId != info.context.user:
+            raise GraphQLError("You are not authorized to perform this action.")
         if asset is not None:
             alerts.asset = asset
         if target_price is not None:
@@ -88,6 +92,8 @@ class DeleteAlerts(graphene.Mutation):
     
     def mutate(self, info, id):
         alerts = Alerts.objects.get(pk=id)
+        if alerts.userId != info.context.user:
+            raise GraphQLError("You are not authorized to perform this action.")
         alerts.delete()
         return DeleteAlerts(alerts_id=id)
     
