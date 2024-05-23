@@ -2,12 +2,14 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 from .models import Alerts
-from users.models import UserAccount
 from datetime import datetime
+from django.contrib.auth import get_user_model
 
-class UserAccountType(DjangoObjectType):
+User = get_user_model()
+
+class UserType(DjangoObjectType):
     class Meta:
-        model = UserAccount
+        model = User
         fields = ("id", "email", "first_name", "last_name")
 
 class AlertsType(DjangoObjectType):
@@ -45,7 +47,7 @@ class CreateAlerts(graphene.Mutation):
     alerts = graphene.Field(AlertsType)
     
     def mutate(self, info, userId, asset, current_price, target_price, is_open, open_date=None, close_date=None) :
-        user = UserAccount.objects.get(pk=userId)
+        user = User.objects.get(pk=userId)
         if open_date is None:
             open_date = datetime.now()
         alerts = Alerts.objects.create(
@@ -92,10 +94,13 @@ class DeleteAlerts(graphene.Mutation):
     
     def mutate(self, info, id):
         alerts = Alerts.objects.get(pk=id)
+
         if alerts.userId != info.context.user:
+            print(f"alerts.userId.id {alerts.userId.id}, alerts.userId {info.context.user}")
             raise GraphQLError("You are not authorized to perform this action.")
         alerts.delete()
         return DeleteAlerts(alerts_id=id)
+    
     
 class Mutation(graphene.ObjectType):
     create_alerts = CreateAlerts.Field()

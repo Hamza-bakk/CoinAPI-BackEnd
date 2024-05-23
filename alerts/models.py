@@ -1,9 +1,10 @@
 from datetime import datetime
 from django.db import models
-from users.models import UserAccount
+from django.contrib.auth import get_user_model
+
 
 class Alerts(models.Model):
-    userId = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    userId = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     asset = models.TextField(max_length=35)
     current_price = models.IntegerField()
     target_price = models.IntegerField()
