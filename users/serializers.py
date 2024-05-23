@@ -1,4 +1,4 @@
-from djoser.serializers import UserCreateSerializer
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -21,3 +21,15 @@ class UserCreateSerializer(UserCreateSerializer):
         
         instance.save()
         return instance
+
+class CurrentUserSerializer(UserSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'first_name', 'last_name')
+    
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        if request:
+            current_user = request.user.id
+            print(f'Current user in serializer: {current_user}')
+        return super().to_representation(instance)

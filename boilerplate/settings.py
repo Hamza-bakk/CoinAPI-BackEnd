@@ -59,7 +59,7 @@ DJOSER = {
     "SERIALIZERS": {
         "user_create": "users.serializers.UserCreateSerializer",
         "user": "users.serializers.UserCreateSerializer",
-        "current_user": "users.serializers.UserCreateSerializer",
+        "current_user": "users.serializers.CurrentUserSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
 }
@@ -68,11 +68,14 @@ DOMAIN = "localhost:5173/auth/users"
 SITE_NAME = "HB"
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_permissions.IsAuthenticated"),
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
+
 
 
 SIMPLE_JWT = {
@@ -90,12 +93,18 @@ SIMPLE_JWT = {
     "AUTH_COOKIE_SECURE": False,  # Mettre True si vous utilisez HTTPS
 }
 
+GRAPHENE = {
+    'SCHEMA': 'boilerplate.schema.schema',  # Remplacez 'your_project' par le nom de votre projet
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+        'graphene_django.debug.DjangoDebugMiddleware',
+    ],
+}
+
 
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    # 'boilerplate.middleware.JwtCookieMiddleware',
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -103,9 +112,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-
 ]
+
 
 CORS_ALLOWED_ORIGINS = [os.getenv("FRONT_ONE")]
 
