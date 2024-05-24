@@ -30,6 +30,5 @@ class CurrentUserSerializer(UserSerializer):
     def to_representation(self, instance):
         request = self.context.get('request')
         if request:
-            current_user = request.user.id
-            print(f'Current user in serializer: {current_user}')
+            request.user.id
         return super().to_representation(instance)
