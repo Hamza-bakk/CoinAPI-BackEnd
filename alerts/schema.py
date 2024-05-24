@@ -93,6 +93,7 @@ class UpdateAlerts(graphene.Mutation):
         alerts.save()
         return UpdateAlerts(alerts=alerts)
 
+
 class DeleteAlerts(graphene.Mutation):
     class Arguments:
         id = graphene.ID(required=True)
