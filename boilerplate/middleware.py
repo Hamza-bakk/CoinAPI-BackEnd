@@ -1,28 +1,30 @@
-
-from datetime import timedelta
+from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
-from rest_framework_simplejwt.tokens import RefreshToken
+from django.conf import settings
+import datetime
 
 class JwtCookieMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
-        if response.data.get('access'):
+        if 'access' in response.data:
             access_token = response.data['access']
-            refresh_token = response.data.get('refresh')
+            expiration = datetime.datetime.now() + settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]
+            path = "/"
+            domain=None
+            secure = "False"
+            httponly = True
+            samsite = "None"
+
+            # Définition du cookie
             response.set_cookie(
-                'access_token',
-                access_token,
-                max_age=60*60,  # 1 hour
-                httponly=True,
-                secure=False,  # Set to True if using HTTPS
-                samesite='Lax',
+                key=settings.SIMPLE_JWT["AUTH_COOKIE"],
+                value=access_token,
+                expires=expiration,
+                path=path,
+                domain=domain,
+                secure=False, 
+                httponly=httponly,
+                samesite=samsite, 
             )
-            # if refresh_token:
-            #     response.set_cookie(
-            #         'refresh_token',
-            #         refresh_token,
-            #         max_age=60*60*24,  # 1 day
-            #         httponly=True,
-            #         secure=False,  # Set to True if using HTTPS
-            #         samesite='Lax',
-            #     )
+            print(f"Set-Cookie: {settings.SIMPLE_JWT['AUTH_COOKIE']}={access_token}; Domain={path}; Path={path}; Expires={expiration.strftime('%a, %d %b %Y %H:%M:%S GMT')}; Secure={secure}; HttpOnly={httponly}; SameSite={samsite}")
+
         return response

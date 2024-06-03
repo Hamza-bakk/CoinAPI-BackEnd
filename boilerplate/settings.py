@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1"]
 
 
 # Application definition
@@ -78,20 +78,17 @@ REST_FRAMEWORK = {
 
 
 
+
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=3600),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     'BLACKLIST_AFTER_ROTATION': True,
 
     "AUTH_COOKIE": "access_token",
-    'AUTH_COOKIE_DOMAIN': os.getenv("FRONT_ONE"),
-
-    "AUTH_COOKIE_HTTP_ONLY": True,
-    "AUTH_COOKIE_PATH": "/",
-    "AUTH_COOKIE_SAMESITE": "Lax",
-    "AUTH_COOKIE_SECURE": False,  # Mettre True si vous utilisez HTTPS
 }
+
+
 
 GRAPHENE = {
     'SCHEMA': 'boilerplate.schema.schema',  # Remplacez 'your_project' par le nom de votre projet
@@ -105,7 +102,9 @@ GRAPHENE = {
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'boilerplate.middleware.JwtCookieMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
